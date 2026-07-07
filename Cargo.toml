@@ -2,6 +2,7 @@
 name = "cursor-db"
 version = "0.1.0"
 edition = "2024"
+default-run = "cursor-db"
 
 [dependencies]
 anyhow = "1.0.103"

@@ -1,5 +1,8 @@
-use crate::trade::{Header, Trade, HEADER_SIZE, TRADE_SIZE, MAGIC, VERSION};
-use anyhow::{bail, Result};
+use crate::{
+    cursor::Cursor,
+    trade::{HEADER_SIZE, Header, MAGIC, TRADE_SIZE, Trade, VERSION},
+};
+use anyhow::{Result, bail};
 use memmap2::Mmap;
 use std::{fs::File, path::Path, slice};
 
@@ -12,7 +15,7 @@ pub struct BinaryFile {
 impl BinaryFile {
     pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
         assert_eq!(HEADER_SIZE % std::mem::align_of::<Trade>(), 0);
-        
+
         let file = File::open(path)?;
 
         let mmap = unsafe { Mmap::map(&file)? };
@@ -77,5 +80,15 @@ impl BinaryFile {
     #[inline]
     pub fn trade(&self, index: usize) -> Option<&Trade> {
         unsafe { (&*self.trades).get(index) }
+    }
+
+    #[inline]
+    pub fn trades(&self) -> &[Trade] {
+        unsafe { &*self.trades }
+    }
+
+    #[inline]
+    pub fn cursor(&self) -> Cursor<'_> {
+        Cursor::new(self.trades())
     }
 }
