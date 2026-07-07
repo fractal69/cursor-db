@@ -11,6 +11,6 @@ fn main() -> Result<()> {
     println!("{:#?}", cursor.next());
     println!("{:#?}", cursor.seek(1_000_000));
     println!("{:#?}", cursor.prev());
- 
+
     Ok(())
 }

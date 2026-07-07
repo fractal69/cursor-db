@@ -1,6 +1,6 @@
 use crate::trade::{Header, Trade};
-use std::io::Write;
 use anyhow::Result;
+use std::io::Write;
 
 pub fn write_header<W: Write>(writer: &mut W, header: &Header) -> Result<()> {
     writer.write_all(&header.magic.to_le_bytes())?;

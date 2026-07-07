@@ -2,7 +2,28 @@
 name = "cursor-db"
 version = "0.1.0"
 edition = "2024"
+
+authors = ["Juan Jose Caballero Rey", "fractal69"]
 default-run = "cursor-db"
+license = "GPL-3.0-only"
+description = "High-performance immutable cursor for binary tick databases."
+repository = "https://github.com/fractal69/cursor-db"
+homepage = "https://github.com/fractal69/cursor-db"
+documentation = "https://github.com/fractal69/cursor-db"
+readme = "README.md"
+
+keywords = [
+    "cursor",
+    "database",
+    "trading",
+    "backtesting",
+    "tick",
+]
+
+categories = [
+    "database",
+    "science",
+]
 
 [dependencies]
 anyhow = "1.0.103"

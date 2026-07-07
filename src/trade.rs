@@ -55,4 +55,3 @@ mod tests {
         assert_eq!(TRADE_SIZE, 40);
     }
 }
-
