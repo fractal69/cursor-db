@@ -11,7 +11,7 @@ pub struct Header {
     pub trade_count: u64,
 }
 
-#[repr(C)]
+#[repr(C, align(8))]
 #[derive(Debug, Clone, Copy)]
 pub struct Trade {
     pub id: u64,

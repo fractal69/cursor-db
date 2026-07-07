@@ -1,0 +1,81 @@
+use crate::trade::{Header, Trade, HEADER_SIZE, TRADE_SIZE, MAGIC, VERSION};
+use anyhow::{bail, Result};
+use memmap2::Mmap;
+use std::{fs::File, path::Path, slice};
+
+pub struct BinaryFile {
+    mmap: Mmap,
+    header: Header,
+    trades: *const [Trade],
+}
+
+impl BinaryFile {
+    pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
+        assert_eq!(HEADER_SIZE % std::mem::align_of::<Trade>(), 0);
+        
+        let file = File::open(path)?;
+
+        let mmap = unsafe { Mmap::map(&file)? };
+
+        if mmap.len() < HEADER_SIZE {
+            bail!("File too small");
+        }
+
+        let header = Header {
+            magic: u32::from_le_bytes(mmap[0..4].try_into()?),
+            version: u32::from_le_bytes(mmap[4..8].try_into()?),
+            trade_count: u64::from_le_bytes(mmap[8..16].try_into()?),
+        };
+
+        if header.magic != MAGIC {
+            bail!("Invalid magic");
+        }
+
+        if header.version != VERSION {
+            bail!("Unsupported version");
+        }
+
+        let expected_size = HEADER_SIZE + header.trade_count as usize * TRADE_SIZE;
+
+        if mmap.len() != expected_size {
+            bail!(
+                "Corrupted file. Expected {} bytes, got {}",
+                expected_size,
+                mmap.len()
+            );
+        }
+
+        let trades = unsafe {
+            slice::from_raw_parts(
+                mmap.as_ptr().add(HEADER_SIZE) as *const Trade,
+                header.trade_count as usize,
+            )
+        };
+
+        Ok(Self {
+            mmap,
+            header,
+            trades,
+        })
+    }
+
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.header.trade_count as usize
+    }
+
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.header.trade_count == 0
+    }
+
+    #[inline]
+    pub fn header(&self) -> &Header {
+        &self.header
+    }
+
+    #[inline]
+    pub fn trade(&self, index: usize) -> Option<&Trade> {
+        unsafe { (&*self.trades).get(index) }
+    }
+}

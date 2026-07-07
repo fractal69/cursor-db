@@ -6,4 +6,5 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.103"
 csv = "1.4.0"
+memmap2 = "0.9.11"
 serde = { version = "1.0.228", features = ["derive"] }
