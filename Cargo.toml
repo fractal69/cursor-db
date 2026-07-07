@@ -1,10 +1,10 @@
 [package]
-name = "cursor-db"
+name = "tickdb"
 version = "0.1.0"
 edition = "2024"
 
 authors = ["Juan Jose Caballero Rey", "fractal69"]
-default-run = "cursor-db"
+default-run = "tickdb"
 license = "GPL-3.0-only"
 description = "High-performance immutable cursor for binary tick databases."
 repository = "https://github.com/fractal69/cursor-db"

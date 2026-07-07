@@ -1,7 +1,7 @@
 use anyhow::Result;
 use csv::Reader;
 
-use cursor_db::{
+use tickdb::{
     trade::{Header, MAGIC, Trade, VERSION},
     utils::{write_header, write_trade},
 };
