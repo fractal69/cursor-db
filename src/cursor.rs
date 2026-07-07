@@ -8,10 +8,7 @@ pub struct Cursor<'a> {
 impl<'a> Cursor<'a> {
     #[inline]
     pub fn new(trades: &'a [Trade]) -> Self {
-        Self {
-            trades,
-            index: 0,
-        }
+        Self { trades, index: 0 }
     }
 
     #[inline]
@@ -72,5 +69,72 @@ impl<'a> Cursor<'a> {
     #[inline]
     pub fn reset(&mut self) {
         self.index = 0;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::binary::BinaryFile;
+
+    #[test]
+    fn cursor_matches_direct_access() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        let indices = [
+            0,
+            1,
+            10,
+            100,
+            1_000,
+            file.len() / 2,
+            file.len() - 2,
+            file.len() - 1,
+        ];
+
+        for index in indices {
+            let direct = file.trade(index);
+            let cursor_trade = cursor.seek(index);
+
+            assert_eq!(direct, cursor_trade);
+        }
+    }
+
+    #[test]
+    fn next_prev_are_inverse() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        let indices = [0, 1, 10, 100, 1_000, file.len() / 2, file.len() - 2];
+
+        for index in indices {
+            cursor.seek(index).unwrap();
+
+            let original = *cursor.current().unwrap();
+
+            cursor.next().unwrap();
+            cursor.prev().unwrap();
+
+            assert_eq!(original, *cursor.current().unwrap());
+            assert_eq!(cursor.index(), index);
+        }
+    }
+
+    #[test]
+    fn cursor_is_sequential() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        for index in 0..file.len() {
+            assert_eq!(cursor.current(), file.trade(index));
+
+            if index + 1 < file.len() {
+                cursor.next().unwrap();
+            }
+        }
     }
 }

@@ -16,3 +16,29 @@ fn main() -> Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn trades_are_time_sorted() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut previous = file.trade(0).unwrap();
+
+        for index in 1..file.len() {
+            let current = file.trade(index).unwrap();
+
+            assert!(
+                previous.time <= current.time,
+                "Time order violated at index {}: {} > {}",
+                index,
+                previous.time,
+                current.time,
+            );
+
+            previous = current;
+        }
+    }
+}
