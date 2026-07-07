@@ -137,4 +137,38 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn next_stops_at_end() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        cursor.seek(file.len() - 1).unwrap();
+
+        let last = *cursor.current().unwrap();
+
+        assert!(cursor.next().is_none());
+
+        // El cursor debe seguir apuntando al último trade.
+        assert_eq!(cursor.index(), file.len() - 1);
+        assert_eq!(*cursor.current().unwrap(), last);
+    }
+
+    #[test]
+    fn prev_stops_at_beginning() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        let first = *cursor.current().unwrap();
+
+        assert_eq!(cursor.index(), 0);
+
+        assert!(cursor.prev().is_none());
+
+        // El cursor debe seguir apuntando al primer trade.
+        assert_eq!(cursor.index(), 0);
+        assert_eq!(*cursor.current().unwrap(), first);
+    }
 }
