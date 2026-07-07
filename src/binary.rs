@@ -12,6 +12,10 @@ pub struct BinaryFile {
     trades: *const [Trade],
 }
 
+unsafe impl Send for BinaryFile {}
+
+unsafe impl Sync for BinaryFile {}
+
 impl BinaryFile {
     pub fn open<P: AsRef<Path>>(path: P) -> Result<Self> {
         assert_eq!(HEADER_SIZE % std::mem::align_of::<Trade>(), 0);
