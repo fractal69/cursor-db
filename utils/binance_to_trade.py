@@ -6,7 +6,7 @@ from decimal import Decimal, ROUND_HALF_UP
 SCALE = Decimal("100000000")
 
 INPUT = "./input/input.csv"
-OUTPUT = "output.csv"
+OUTPUT = "./output/output.csv"
 
 def normalize_time(value: str) -> int:
     t = int(value)

@@ -1,1 +1,6 @@
 *.csv
+*.bin
+
+# Added by cargo
+
+/target
