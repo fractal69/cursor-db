@@ -171,4 +171,22 @@ mod tests {
         assert_eq!(cursor.index(), 0);
         assert_eq!(*cursor.current().unwrap(), first);
     }
+
+    #[test]
+    fn seek_is_idempotent() {
+        let file = BinaryFile::open("./output/ticks.bin").unwrap();
+
+        let mut cursor = file.cursor();
+
+        let indices = [0, 1, 10, 100, 1_000, file.len() / 2, file.len() - 1];
+
+        for index in indices {
+            let first = *cursor.seek(index).unwrap();
+
+            let second = *cursor.seek(index).unwrap();
+
+            assert_eq!(first, second);
+            assert_eq!(cursor.index(), index);
+        }
+    }
 }

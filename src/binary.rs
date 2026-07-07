@@ -93,3 +93,23 @@ impl BinaryFile {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::binary::BinaryFile;
+
+    #[test]
+    fn trade_count_matches_file_size() {
+        use std::fs;
+
+        let path = "./output/ticks.bin";
+
+        let metadata = fs::metadata(path).unwrap();
+
+        let file = BinaryFile::open(path).unwrap();
+
+        let expected = HEADER_SIZE as u64 + file.len() as u64 * TRADE_SIZE as u64;
+
+        assert_eq!(metadata.len(), expected);
+    }
+}
