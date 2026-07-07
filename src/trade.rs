@@ -12,7 +12,7 @@ pub struct Header {
 }
 
 #[repr(C, align(8))]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Trade {
     pub id: u64,
     pub time: u64,
@@ -25,16 +25,34 @@ pub struct Trade {
 pub const HEADER_SIZE: usize = size_of::<Header>();
 pub const TRADE_SIZE: usize = size_of::<Trade>();
 
+//----------------------------------------------------------------------------------------------------------------------
+// TESTS
+//----------------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::mem::{align_of, size_of};
 
     #[test]
     fn layout() {
         assert_eq!(HEADER_SIZE, 16);
         assert_eq!(TRADE_SIZE, 40);
     }
-}
 
+    #[test]
+    fn binary_layout_is_stable() {
+        // Header
+        assert_eq!(size_of::<Header>(), 16);
+        assert_eq!(align_of::<Header>(), 8);
+
+        // Trade
+        assert_eq!(size_of::<Trade>(), 40);
+        assert_eq!(align_of::<Trade>(), 8);
+
+        // El archivo binario depende de estos tamaños.
+        assert_eq!(HEADER_SIZE, 16);
+        assert_eq!(TRADE_SIZE, 40);
+    }
+}
 
