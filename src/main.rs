@@ -1,5 +1,5 @@
 use anyhow::Result;
-use tickdb::binary::BinaryFile;
+use cursor_db::binary::BinaryFile;
 
 fn main() -> Result<()> {
     let file = BinaryFile::open("./output/ticks.bin")?;

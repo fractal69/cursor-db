@@ -30,6 +30,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cursor-db"
+version = "0.1.1"
+dependencies = [
+ "anyhow",
+ "csv",
+ "memmap2",
+ "serde",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -119,16 +129,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "tickdb"
-version = "0.1.1"
-dependencies = [
- "anyhow",
- "csv",
- "memmap2",
- "serde",
 ]
 
 [[package]]
