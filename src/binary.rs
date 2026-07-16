@@ -92,6 +92,15 @@ impl BinaryFile {
     }
 
     #[inline]
+    pub fn range(&self, start: usize, count: usize) -> &[Trade] {
+        let trades: &[Trade] = self.trades();
+
+        let end: usize = (start + count).min(trades.len());
+
+        &trades[start..end]
+    }
+
+    #[inline]
     pub fn cursor(&self) -> Cursor<'_> {
         Cursor::new(self.trades())
     }

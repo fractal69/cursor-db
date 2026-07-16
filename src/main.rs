@@ -2,7 +2,11 @@ use anyhow::Result;
 use cursor_db::binary::BinaryFile;
 
 fn main() -> Result<()> {
-    let file = BinaryFile::open("./output/ticks.bin")?;
+    let file: BinaryFile = BinaryFile::open("./output/ticks.bin")?;
+
+    println!("{:#?}", file.range(10, 1000));
+
+
 
     let mut cursor = file.cursor();
 
