@@ -1,3 +1,4 @@
+import hashlib
 import csv
 import time
 import requests
@@ -19,6 +20,10 @@ SCALE = Decimal("100000000")
 
 # ============================================================
 
+def trade_id_u64(value: str) -> int:
+    digest = hashlib.blake2b(value.encode(), digest_size=8).digest()
+    return int.from_bytes(digest, "big")
+    
 def scale(value):
     return int(Decimal(str(value)) * SCALE)
 
@@ -109,14 +114,6 @@ def save_csv(filename: str, rows: list):
 
         writer = csv.writer(f)
 
-        writer.writerow([
-            "id",
-            "time",
-            "price",
-            "qty",
-            "is_buyer_maker"
-        ])
-
         for row in rows:
 
             if row["id"] in seen:
@@ -125,7 +122,7 @@ def save_csv(filename: str, rows: list):
             seen.add(row["id"])
 
             writer.writerow([
-                int(row["id"], 16),
+                trade_id_u64(row["id"]),
                 iso_to_millis(row["createdAt"]),
                 scale(row["price"]),
                 scale(row["size"]),
