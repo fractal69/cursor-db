@@ -122,7 +122,7 @@ def save_csv(filename: str, rows: list):
             seen.add(row["id"])
 
             writer.writerow([
-                trade_id_u64(row["id"]),
+                trade_id_u64(row["id"]), #CHANGE TO STRING 
                 iso_to_millis(row["createdAt"]),
                 scale(row["price"]),
                 scale(row["size"]),
